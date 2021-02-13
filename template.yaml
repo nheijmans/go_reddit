@@ -1,0 +1,43 @@
+AWSTemplateFormatVersion: '2010-09-09'
+Transform: 'AWS::Serverless-2016-10-31'
+Description: Reddit scraper for fun and giggles
+
+Globals:
+  Function:
+    Timeout: 30
+    MemorySize: 128
+    Runtime: python3.8
+    ReservedConcurrentExecutions: 1
+  
+Resources:
+  # ================ FUNCTIONS ==================
+  RedditScrapingLambda:
+    Type: AWS::Serverless::Function
+    Properties:
+      CodeUri: RedditScraper/
+      Handler: reddit_scraper.lambda_handler
+      Tags:
+        Project: RedditScraper 
+      Policies:
+        # workaround to fix - we need enter the bucketname as a string instead of a !Ref to the object
+        - S3CrudPolicy:
+            BucketName: !Sub "${AWS::StackName}-${AWS::AccountId}-reddit"
+      Environment:
+        Variables:
+          BucketName: !Sub "${AWS::StackName}-${AWS::AccountId}-reddit"
+      Events:
+        CronTrigger:
+          Type: Schedule
+          Properties:
+            Schedule: rate(15 minutes)
+
+  # ================ S3 bucket ==================
+  RedditBucket:
+    Type: AWS::S3::Bucket
+    Properties:
+      BucketName: !Sub "${AWS::StackName}-${AWS::AccountId}-reddit"
+
+
+Outputs:
+  Bucket:
+    Value: !Ref RedditBucket

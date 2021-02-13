@@ -11,7 +11,7 @@ SLEEP_TIME=0.5
 # s3 bucket name to store csv posts
 BUCKET_NAME= env['BucketName']
 # list of subreddits to load
-TOPICS = ['investing','stocks']
+TOPICS = ['investing','stocks','StockMarket','wallstreetbets','CryptoCurrency']
 
 def lambda_handler(event, context):
     for topic in TOPICS:
@@ -43,7 +43,7 @@ def parse_posts(posts, response):
     json_data = response.json()['data']
     for post in json_data['children']:
         post_data = post["data"]
-        posts.append((post_data["name"], post_data["subreddit"], post_data["title"], post_data["selftext"]))
+        posts.append((post_data["created_utc"], post_data["name"], post_data["subreddit"], post_data["title"], post_data["selftext"]))
 
 def load_posts(posts, direction, limit, url, pagingId=None):
     headers = {'User-agent': 'Bleep bot 0.1'}

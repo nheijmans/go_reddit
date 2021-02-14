@@ -43,7 +43,8 @@ def parse_posts(posts, response):
     json_data = response.json()['data']
     for post in json_data['children']:
         post_data = post["data"]
-        posts.append((post_data["created_utc"], post_data["name"], post_data["subreddit"], post_data["title"], post_data["selftext"]))
+        posts.append((post_data["name"], post_data["created_utc"], post_data["subreddit"], post_data["title"], post_data["selftext"]))
+        comprehend_analysis(post_data["selftext"])
 
 def load_posts(posts, direction, limit, url, pagingId=None):
     headers = {'User-agent': 'Bleep bot 0.1'}
@@ -80,3 +81,10 @@ def convert_to_csv(posts):
     for post in posts:
         writer.writerow(post)
     return output.getvalue()
+
+def comprehend_analysis(text):
+    comprehend_client = boto3.client('comprehend')
+    entity_data = comprehend_client.get_entities(Text=text)
+    print(entity_data)
+
+    return

@@ -4,7 +4,7 @@ Description: Reddit scraper for fun and giggles
 
 Globals:
   Function:
-    Timeout: 20
+    Timeout: 50
     MemorySize: 256
     Runtime: python3.8
     ReservedConcurrentExecutions: 1

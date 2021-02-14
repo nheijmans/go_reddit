@@ -9,6 +9,14 @@ Done :)
 
 ### Deploying
 Easy peasy with AWS SAM
+
+Build it
+```
+sam build --use-container --skip-pull-image --parallel --cached
+```
+
+Then deploy
+
 ```
 sam deploy --guided
 ```
